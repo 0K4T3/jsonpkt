@@ -2,7 +2,7 @@ import argparse
 import sys
 from typing import List
 
-from jsonpkt.commands import SendCommand, ViewCommand
+from jsonpkt.commands import SendCommand, SendRecvCommand, ViewCommand
 
 
 argparser = argparse.ArgumentParser()
@@ -10,7 +10,14 @@ subparsers = argparser.add_subparsers()
 
 subparser_send = subparsers.add_parser('send', help='Generate and send packet by JSON file. See "jsonpkt send -h"')
 subparser_send.add_argument('file', help='Packet definition file. (JSON)')
+# subparser_send.add_argument('-l', '--layer', default=3, help='Packet layer.')
 subparser_send.set_defaults(handler=lambda args: SendCommand().process(args))
+
+subparser_sendrecv = subparsers.add_parser('sendrecv', help='Generate, send and receive packet by JSON file. See "jsonpkt sendrecv -h"')
+subparser_sendrecv.add_argument('file', help='Packet definition file. (JSON)')
+# subparser_send.add_argument('-l', '--layer', default=3, help='Packet layer.')
+subparser_sendrecv.set_defaults(handler=lambda args: SendRecvCommand().process(args))
+
 subparser_view = subparsers.add_parser('view', help='View packet prettierly. See "jsonpkt view -h"')
 subparser_view.add_argument('file', help='Packet definition file. (JSON)')
 subparser_view.set_defaults(handler=lambda args: ViewCommand().process(args))
