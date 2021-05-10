@@ -42,7 +42,7 @@ def to_packet_json(packet: scapy.Packet) -> dict:
     while not isinstance(packet, scapy.packet.NoPayload):
         packet_type = type(packet).__name__
         packet_fields = {
-            key: str(value)
+            key: value if isinstance(value, int) else str(value)
             for key, value in packet.fields.items()
             if key != 'options'
         }
