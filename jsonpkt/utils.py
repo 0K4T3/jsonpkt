@@ -10,6 +10,7 @@ def replace_with_environment_var(value: typing.Union[int, str]) -> typing.Union[
     if isinstance(value, str) and value.startswith('${') and value.endswith('}'):
         value = value[len('${'):-len('}')]
         value = os.getenv(value, '')
+        
     return value
 
 
@@ -18,6 +19,7 @@ def resolve_environment_vars(packet_json: dict) -> dict:
         if key == 'payload':
             continue
         packet_json[key] = replace_with_environment_var(value)
+        
     return packet_json
 
 
@@ -39,14 +41,18 @@ def to_packet_json(packet: scapy.Packet) -> dict:
     packet_jsons = []
     while not isinstance(packet, scapy.packet.NoPayload):
         packet_type = type(packet).__name__
-        packet_fields = packet.fields
-        if 'options' in packet_fields:
-            packet_fields.pop('options')
-        for key, value in packet_fields.items():
-            packet_fields[key] = str(value)
+        packet_fields = {
+            key: str(value)
+            for key, value in packet.fields.items()
+            if key != 'options'
+        }
         packet_jsons.append({ packet_type: packet_fields })
         packet = packet.payload
+        
     for i in range(len(packet_jsons) - 1):
+        if not packet_jsons[i]:
+            continue
         packet_type, packet_fields = list(packet_jsons[i].items())[0]
         packet_fields['payload'] = packet_jsons[i + 1]
+        
     return packet_jsons[0]

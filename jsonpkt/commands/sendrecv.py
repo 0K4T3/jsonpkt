@@ -12,6 +12,7 @@ class SendRecvCommand(BaseCommand):
         with open(file) as fp:
             packet_json = json.load(fp)
             packet = parse_packet_json(packet_json)
-            res = scapy.sr1(packet, verbose=False)
+            sender = scapy.srp1 if args.layer < 3 else scapy.sr1
+            res = sender(packet, verbose=False)
             packet_json = to_packet_json(res)
             print(json.dumps(packet_json, indent=2))

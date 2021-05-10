@@ -1,7 +1,7 @@
 import json
 
 from jsonpkt.commands import BaseCommand
-from jsonpkt.utils import parse_packet_json
+from jsonpkt.utils import parse_packet_json, to_packet_json
 
 
 class ViewCommand(BaseCommand):
@@ -10,4 +10,7 @@ class ViewCommand(BaseCommand):
         with open(file) as fp:
             packet_json = json.load(fp)
             packet = parse_packet_json(packet_json)
-            packet.show()
+            if args.format == 'json':
+                print(json.dumps(to_packet_json(packet), indent=args.indent))
+            else:
+                packet.show()

@@ -12,5 +12,6 @@ class SendCommand(BaseCommand):
         with open(file) as fp:
             packet_json = json.load(fp)
             packet = parse_packet_json(packet_json)
-            scapy.sendp(packet, verbose=False)
+            sender = scapy.sendp if args.layer < 3 else scapy.send
+            sender(packet, verbose=False)
         
