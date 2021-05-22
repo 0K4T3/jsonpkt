@@ -28,5 +28,5 @@ subparser_view.set_defaults(handler=lambda args: ViewCommand().process(args))
 def main(args: List[str] = sys.argv):
     _, *args = args
     parsed_args = argparser.parse_args(args=args)
-    parsed_args.handler(parsed_args)
+    parsed_args.handler(**vars(parsed_args))
     
